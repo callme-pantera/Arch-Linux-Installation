@@ -15,10 +15,13 @@
   [![License Badge](https://img.shields.io/badge/LICENSE-CC-Test?style=for-the-badge&logo=https%3A%2F%2Ficons8.com%2Ficon%2F83178%2Fimage-file&labelColor=%23333333&color=%234361ee)](LICENSE)
 </div>
 
+<br>
+
 <p align="center">
-  <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Arch Linux Logo" width="200">
+  <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Arch Linux Logo" width="255">
 </p>
 
+<br>
 <br>
 
 Arch Linux is one of the most well-known free and open-source Linux distributions in the IT community. It’s highly regarded for its extreme customizability, minimalism, and the level of control it gives the user over every aspect of the operating system. Guided by the [**KISS**](<comprehensive breakdown/KISS.md>) (*Keep It Simple, Stupid*) philosophy, Arch provides a clean, minimal base system without unnecessary additions, allowing the user to decide exactly what to install and how to configure it.<br>
