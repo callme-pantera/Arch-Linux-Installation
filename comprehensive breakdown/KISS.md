@@ -8,7 +8,9 @@ In Arch Linux, KISS translates to:
 * Maintaining a transparent and predictable structure where you know exactly what is running on your machine.
 * Giving full control to the user to decide what gets installed, configured, or removed.
 
-This philosophy is the reason why Arch Linux does not have a flashy installer, preconfigured desktop environments, or layers of abstraction hiding what’s going on. Instead, you get the essential building blocks and you assemble the rest according to your needs.<br>
+This philosophy is the reason why Arch Linux does not have a flashy installer, preconfigured desktop environments, or layers of abstraction hiding what’s going on. Instead, you get the essential building blocks and you assemble the rest according to your needs.
+
+<br>
 
 ## Why it matters for this project
 In this repository, every step, configuration choice, and customization follows the KISS principle. By starting from a bare minimum, we avoid unnecessary complexity and ensure that every package, service, and setting serves a clear purpose. This approach not only keeps the system lightweight but also makes it easier to maintain, troubleshoot, and adapt over time.<br>
