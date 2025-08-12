@@ -1,9 +1,9 @@
 <div align="center">
   <div style="text-align: center;">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="assets/images/logos/pantera-1.4.png">
-      <source media="(prefers-color-scheme: light)" srcset="assets/images/logos/pantera-1.3.png">
-      <img src="assets/images/logos/pantera-1.4.png" alt="Logo of Pantera" width="350px">
+      <source media="(prefers-color-scheme: dark)" srcset="../assets/images/logos/pantera-1.4.png">
+      <source media="(prefers-color-scheme: light)" srcset="../assets/images/logos/pantera-1.3.png">
+      <img src="../assets/images/logos/pantera-1.4.png" alt="Logo of Pantera" width="350px">
     </picture>
   </div>
 
@@ -83,4 +83,5 @@ From here, the installation steps are the same as in a virtual machine — excep
 
 > [!WARNING]
 > Installing Arch Linux on bare metal will erase all data on the target drive. Make sure to back up important files before continuing. Once the process starts, it cannot be undone.
+
 
