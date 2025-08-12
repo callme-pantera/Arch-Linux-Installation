@@ -22,7 +22,7 @@ In this documentation, Arch Linux is **installed in a virtual machine** for test
 
 If you are new to Arch, I strongly recommend starting in a VM rather than installing it directly on your computer (*bare-metal installation*). In a VM, you can take snapshots and revert to a working state if something goes wrong. On a physical system, a single mistake during installation can break the OS and make recovery more complicated than necessary.<br>
 
-For completeness, I’ve also included general notes on how the process would differ for a bare-metal installation. You can return to this documentation after completing the initial setup in a VM or after following a dedicated guide for local installation, which can be found in the [Comprehensive Breakdown folder as "bare-metal-prep"](../comprehensive%20breakdown/) or directly [here](../comprehensive%20breakdown/bare-metal-prep.md).
+For completeness, I’ve also included general notes on how the process would differ for a bare-metal installation. You can return to this documentation after completing the initial setup in a VM or after following a dedicated guide for local installation, which can be found in the Comprehensive Breakdown folder as "bare-metal-prep" or directly [here](../comprehensive%20breakdown/bare-metal-prep.md).
 
 <br>
 
