@@ -15,11 +15,7 @@
   [![License Badge](https://img.shields.io/badge/LICENSE-CC-Test?style=for-the-badge&logo=https%3A%2F%2Ficons8.com%2Ficon%2F83178%2Fimage-file&labelColor=%23333333&color=%234361ee)](LICENSE)
 </div>
 
-<div align="center">
-  <picture>
-    <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Logo of X" width="250px">    
-  </picture>
-</div>
+<img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Logo of X" width="250px">    
 
 <br>
 
