@@ -17,6 +17,7 @@
 
 <br>
 
+# Overview
 Arch Linux is one of the most well-known free and open-source Linux distributions in the IT community. It’s highly regarded for its extreme customizability, minimalism, and the level of control it gives the user over every aspect of the operating system. Guided by the [**KISS**](<comprehensive breakdown/KISS.md>) (*Keep It Simple, Stupid*) philosophy, Arch provides a clean, minimal base system without unnecessary additions, allowing the user to decide exactly what to install and how to configure it.<br>
 
 Arch follows a **rolling release model**, meaning it is continuously updated rather than released in fixed versions. This ensures that users always have access to the latest software, but also requires them to manage updates carefully to maintain system stability. Software installation and management is handled through **pacman**, Arch’s lightweight yet powerful package manager, combined with the extensive **Arch User Repository (AUR)** for community-maintained packages.<br>
