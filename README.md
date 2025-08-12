@@ -7,10 +7,6 @@
     </picture>
   </div>
 
-  <p align="center">
-    <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Arch Linux Logo" width="250">
-  </p>
-
   <br>
 
   [![Issues Badge](https://img.shields.io/badge/ISSUES-0-Test?style=for-the-badge&logo=https%3A%2F%2Ficons8.com%2Ficon%2F83178%2Fimage-file&labelColor=%23333333&color=%23ba181b)](https://github.com/callme-pantera/CSL-prototype/issues)
