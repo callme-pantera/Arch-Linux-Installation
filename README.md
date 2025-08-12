@@ -18,7 +18,7 @@
 <br>
 
 <p align="center">
-  <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Arch Linux Logo" width="255">
+  <img src="/assets/images/logos/arch-linux-c3Zn.png" alt="Arch Linux Logo" width="700">
 </p>
 
 <br>
