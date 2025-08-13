@@ -40,23 +40,24 @@ Since my [**CSL**](https://github.com/callme-pantera/CSL-Prototype) has **ample 
 This ensures the VM runs as close to bare-metal performance as possible — even with heavy ricing, compiling from the AUR, or multitasking with multiple desktop environments.
 
 
-| Resource         | Minimum Specs           | High-Performance Setup (Used) | Notes                                                                                                 |
-| ---------------- | ----------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **CPU Sockets**  | 1                       | 1                             | 1 socket is optimal for VM scheduling efficiency.                                                     |
-| **CPU Cores**    | 4                       | 8                             | More cores drastically speed up package compilation and multitasking.                                 |
-| **RAM**          | 8 GB                    | 16 GB                         | High RAM ensures smooth performance with multiple DE/WM setups and heavy applications.                |
-| **Storage**      | 40 GB (SSD)             | 100 GB (SSD-backed)           | Extra space for themes, AUR builds, and snapshots; SSD significantly improves install and load times. |
-| **Swap**         | 2 GB                    | 2 GB                          | Small safety net; rarely used with high RAM allocation.                                               |
-| **GPU / Video**  | VirtIO / VMware SVGA II | VirtIO / VMware SVGA II       | Use with 3D acceleration enabled for smooth animations and compositor effects.                        |
-| **Network**      | VirtIO (Bridged)        | VirtIO (Bridged)              | Provides low-latency networking and fast package downloads.                                           |
-| **Display VRAM** | 64 MB                   | 256 MB                        | Higher VRAM improves rendering of animations and high-resolution wallpapers.                          |
-| **NUMA**         | Disabled                | Enabled                       | Improves CPU and memory allocation efficiency on multi-core, multi-RAM-node systems.                  |
-| **CPU Type**     | Default                 | x86-64-v4                     | Uses the most modern instruction set supported by the hardware for maximum performance.               |
+| Resource         | Minimum Specs           | High-Performance Setup (Used)  | Notes                                                                                                 |
+|:-----------------|:------------------------|:-------------------------------|:------------------------------------------------------------------------------------------------------|
+| **CPU Sockets**  | 1                       | 1                              | 1 socket is optimal for VM scheduling efficiency.                                                     |
+| **CPU Cores**    | 4                       | 8                              | More cores drastically speed up package compilation and multitasking.                                 |
+| **RAM**          | 8 GB                    | 16 GB                          | High RAM ensures smooth performance with multiple DE/WM setups and heavy applications.                |
+| **Storage**      | 40 GB (SSD)             | 100 GB (SSD-backed)            | Extra space for themes, AUR builds, and snapshots; SSD significantly improves install and load times. |
+| **Swap**         | 2 GB                    | 2 GB                           | Small safety net; rarely used with high RAM allocation.                                               |
+| **GPU / Video**  | VirtIO / VMware SVGA II | VirtIO / VMware SVGA II        | Use with 3D acceleration enabled for smooth animations and compositor effects.                        |
+| **Network**      | VirtIO (Bridged)        | VirtIO (Bridged)               | Provides low-latency networking and fast package downloads.                                           |
+| **Display VRAM** | 64 MB                   | 256 MB                         | Higher VRAM improves rendering of animations and high-resolution wallpapers.                          |
+| **NUMA**         | Disabled                | Enabled                        | Improves CPU and memory allocation efficiency on multi-core, multi-RAM-node systems.                  |
+| **CPU Type**     | Default                 | host / x86-64-v4               | `host` matches the host CPU exactly for max performance; `x86-64-v4` enables the latest instruction set supported. |
+
 
 <br>
 
 **Why this matters:**
-With **8 cores + 16 GB RAM**, backed by **NUMA** and **x86-64-v4**, this VM can:
+With **8 cores + 16 GB RAM**, backed by **NUMA** and an optimized CPU type (`host` or `x86-64-v4`), this VM can:
 
 - Compile large AUR packages quickly (e.g., Firefox, KDE Plasma)
 - Run compositors like `picom` or full desktop environments with animations and no lag
@@ -72,4 +73,9 @@ With **8 cores + 16 GB RAM**, backed by **NUMA** and **x86-64-v4**, this VM can:
 <br>
 
 ## Pre-Installation
-The pre-installation stage can be thought of as preparing the foundation of the operating system before any actual software is installed. This involves setting up the essential environment — such as partitioning the disk, formatting file systems, and mounting the target directories — so that the installation process has a proper location to work with. Without this base, there would be no place to execute the installation or store the system files.
+The pre-installation stage can be thought of as preparing the foundation of the operating system before any actual software is installed. This involves setting up the essential environment — such as partitioning the disk, formatting file systems, and mounting the target directories — so that the installation process has a proper location to work with. Without this base, there would be no place to execute the installation or store the system files.<br>
+
+Boot Arch Linux according to your setup: if you’re using a VM, start the virtual machine; if you’re installing on bare metal, insert the USB stick, set it as the first boot device in the BIOS, and begin the pre-installation process.<br>
+
+### Console Keyboard Layout and Font Customization
+
