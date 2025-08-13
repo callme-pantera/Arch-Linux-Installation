@@ -77,5 +77,54 @@ The pre-installation stage can be thought of as preparing the foundation of the 
 
 Boot Arch Linux according to your setup: if you’re using a VM, start the virtual machine; if you’re installing on bare metal, insert the USB stick, set it as the first boot device in the BIOS, and begin the pre-installation process.<br>
 
+<div>
+  <img src="/assets/images/ArchLinux-Boot.png" style="width: 100%";>
+  <img src="/assets/images/ArchLinux-Boot2.png" style="width: 100%";>
+</div>
+
+<br>
+
 ### Console Keyboard Layout and Font Customization
+When the pre-installation process begins and Arch Linux boots, you’ll be dropped into a terminal. At this stage, you can configure your keyboard layout to match your preferred language and layout.<br>
+
+```bash
+localectl list-keymaps          # Lists all available keyboard layouts
+loadkeys de-latin1              # Example: set German keyboard layout
+```
+
+If you are unsure of the exact layout name, run `localectl list-keymaps` and search within the list (you can use `grep` to filter, e.g., `localectl list-keymaps | grep de`).<br>
+
+After configuring your keyboard layout, you can also change the font used in your terminal. This step is optional, but it demonstrates one of Arch Linux’s strengths — **the ability to customize even the smallest details** of your system. Console fonts are stored in `/usr/share/kbd/consolefonts/`. To explore the available fonts:<br>
+
+```bash
+ls /usr/share/kbd/consolefonts | less         # Browse through all console fonts
+```
+
+<br>
+
+Additionally you can preview a font without permanently changing your configuration. Simply run:<br>
+
+```bash
+setfont ter-v16n          # Temporary preview
+setfont lat9w-16          # Temporary preview
+```
+
+- `setfont` applies the font instantly.
+- The change lasts **only until you reboot** or switch consoles.
+- The `.psf.gz` file extension and full path are optional when using `setfont`.
+
+**Tip:** Large fonts (e.g., `ter-v32n`) are useful for HiDPI displays or if you want maximum readability.<br>
+
+Once you find a font you like, you can make it the default by editing the `/etc/vconsole.conf` file:<br>
+
+```bash
+nano /etc/vconsole.conf
+
+# Add or edit the following line:
+FONT=ter-v16n
+```
+
+Save the file and reboot to apply the change.
+
+<br>
 
