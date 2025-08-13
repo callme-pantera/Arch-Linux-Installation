@@ -79,7 +79,7 @@ If you skip this step, your system may refuse to boot the installer with an erro
 <br>
 
 ## 6. Proceed with Installation
-From here, the installation steps are the same as in a virtual machine — except you will partition and install directly to your physical drive.
+From here, the installation steps are the same as in a virtual machine — except you will partition and install directly to your physical drive.<br>
 
 > [!WARNING]
 > Installing Arch Linux on bare metal will erase all data on the target drive. Make sure to back up important files before continuing. Once the process starts, it cannot be undone.
