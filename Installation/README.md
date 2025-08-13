@@ -128,3 +128,100 @@ Save the file and reboot to apply the change.
 
 <br>
 
+### Optional: Verify Boot Mode
+You can check which boot mode your system is using during installation. The firmware’s bitness (*UEFI 32-bit or 64-bit, or Legacy BIOS*) must be compatible with the boot loader you plan to install.<br>
+
+Run:
+
+```bash
+cat /sys/firmware/efi/fw_platform_size
+```
+
+- `64` --> 64-bit UEFI mode (recommended)
+- `32` --> 32-bit UEFI mode (rare, older hardware)
+- *No such file or directory* --> Legacy BIOS mode
+
+<br>
+
+#### Switching a Proxmox VM from Legacy BIOS to UEFI
+In my case, running:
+
+```bash
+cat /sys/firmware/efi/fw_platform_size
+```
+
+returned:
+
+```
+No such file or directory
+```
+
+This meant the VM was **not booting in UEFI mode**, but instead using **Legacy BIOS** (SeaBIOS). This is not necessarily a problem — Legacy BIOS is simply older technology. Compared to UEFI, it lacks certain modern features and can be slightly slower, but it works fine for most cases.<br>
+
+However, for the sake of this project and for better alignment with modern hardware, I decided to **switch the VM to UEFI**.<br>
+
+1. **Shut down the VM** completely.
+   * Do not just restart it; make sure it’s powered off.
+
+2. **Add an EFI Disk**
+   * In the Proxmox web interface, go to:
+     **VM --> Hardware --> Add --> EFI Disk**
+   * **Storage**: Select a fast storage location (e.g., `local-lvm` or `local`)
+   * **Size**: Leave at default (usually 128 KB)
+   * Confirm.
+
+3. **Change BIOS type**
+   * Go to **VM --> Options --> BIOS**
+   * Change from **SeaBIOS** to **OVMF (UEFI)**.
+   * Save the change.
+
+4. **Check the machine type**
+   * While still in **Options**, set **Machine Type** to `q35` (recommended for UEFI VMs).
+   * This improves hardware compatibility and supports PCIe devices better.
+
+5. **Verify boot order**
+   * Go to **VM --> Options --> Boot Order**.
+   * Ensure the **CD/DVD drive with your Arch ISO** is first in the list.
+   * Move the EFI Disk above the hard drive if possible.
+
+6. **Start the VM**
+   * Boot normally.
+   * The VM should now start in UEFI mode.
+
+<br>
+
+<div>
+  <img src="/assets/images/VM-specs-update-BIOS.png" style="width: 100%";>
+</div>
+
+<br>
+
+Once you restart the VM, you may be unable to boot into the Arch Linux installer if **Secure Boot** is enabled. To resolve this:
+
+1. Open the **Device Manager** in the UEFI firmware interface.
+2. Navigate to **Secure Boot Configuration**.
+3. Disable **Secure Boot**.
+4. Save the changes and select **Continue** to proceed with booting.
+
+After the system starts, you can verify that UEFI boot mode is active by running this command again:
+
+```bash
+cat /sys/firmware/efi/fw_platform_size
+```
+
+If it returns `64` or `32`, you are in UEFI mode. If it returns *No such file or directory*, the system is still booted in Legacy BIOS mode.
+
+<br>
+
+<div>
+  <img src="/assets/images/UEFI-secure-boot1.png" style="width: 100%";>
+  <img src="/assets/images/UEFI-secure-boot2.png" style="width: 100%";>
+  <img src="/assets/images/ArchLinux-Boot3-success.png" style="width: 100%";>
+</div>
+
+<br>
+
+
+
+
+
