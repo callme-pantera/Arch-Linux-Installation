@@ -71,3 +71,5 @@ With **8 cores + 16 GB RAM**, backed by **NUMA** and **x86-64-v4**, this VM can:
 
 <br>
 
+## Pre-Installation
+The pre-installation stage can be thought of as preparing the foundation of the operating system before any actual software is installed. This involves setting up the essential environment — such as partitioning the disk, formatting file systems, and mounting the target directories — so that the installation process has a proper location to work with. Without this base, there would be no place to execute the installation or store the system files.

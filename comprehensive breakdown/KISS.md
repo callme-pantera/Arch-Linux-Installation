@@ -30,7 +30,7 @@ This philosophy is the reason why Arch Linux does not have a flashy installer, p
 
 <br>
 
-## Why it matters for this project
+## Why It Matters for This Project
 In this repository, every step, configuration choice, and customization follows the KISS principle. By starting from a bare minimum, we avoid unnecessary complexity and ensure that every package, service, and setting serves a clear purpose. This approach not only keeps the system lightweight but also makes it easier to maintain, troubleshoot, and adapt over time.<br>
 
 > [!NOTE]
