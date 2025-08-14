@@ -88,8 +88,11 @@ Boot Arch Linux according to your setup: if you’re using a VM, start the virtu
 When the pre-installation process begins and Arch Linux boots, you’ll be dropped into a terminal. At this stage, you can configure your keyboard layout to match your preferred language and layout.<br>
 
 ```bash
-localectl list-keymaps          # Lists all available keyboard layouts
-loadkeys de-latin1              # Example: set German keyboard layout
+# Lists all available keyboard layouts
+localectl list-keymaps
+
+# Example: set German keyboard layout
+loadkeys de-latin1
 ```
 
 If you are unsure of the exact layout name, run `localectl list-keymaps` and search within the list (you can use `grep` to filter, e.g., `localectl list-keymaps | grep de`).<br>
@@ -97,7 +100,8 @@ If you are unsure of the exact layout name, run `localectl list-keymaps` and sea
 After configuring your keyboard layout, you can also change the font used in your terminal. This step is optional, but it demonstrates one of Arch Linux’s strengths — **the ability to customize even the smallest details** of your system. Console fonts are stored in `/usr/share/kbd/consolefonts/`. To explore the available fonts:<br>
 
 ```bash
-ls /usr/share/kbd/consolefonts | less         # Browse through all console fonts
+# Browse through all console fonts
+ls /usr/share/kbd/consolefonts | less
 ```
 
 <br>
@@ -105,8 +109,9 @@ ls /usr/share/kbd/consolefonts | less         # Browse through all console fonts
 Additionally you can preview a font without permanently changing your configuration. Simply run:<br>
 
 ```bash
-setfont ter-v16n          # Temporary preview
-setfont lat9w-16          # Temporary preview
+# Temporary preview
+setfont ter-v16n
+setfont lat9w-16
 ```
 
 - `setfont` applies the font instantly.
@@ -249,5 +254,73 @@ These are the steps to ensure you have a intternet connection:<br>
 > Since this Arch installation is running on a VM inside my CSL, no additional network setup was required. The Lab environment is already configured to provide internet connectivity to any VM that is assigned to the correct VLAN and connected to the appropriate Linux bridge.
 
 <br>
+
+### Update the System Clock
+In the Arch Linux live environment, **`systemd-timesyncd`** is enabled by default. This means the system clock will be automatically synchronized with internet time servers as soon as an internet connection is established.<br>
+
+You can verify the time status using:
+
+```bash
+timedatectl
+```
+
+Look for `System clock synchronized: yes` to confirm that synchronization is active. If the clock is **not synchronized**, you can enable and start the time synchronization service:
+
+```bash
+timedatectl set-ntp true
+```
+
+<br>
+
+#### Manually Changing the Time and Timezone
+Arch uses `timedatectl` (*part of systemd*) to handle timezones. To list all available timezones, use this command:
+
+```bash
+timedatectl list-timezones
+```
+
+<br>
+
+> [!TIP]
+> You can scroll or search with `/` if the list is long.
+
+<br>
+
+To set your desired timezone, use this command:
+
+```bash
+sudo timedatectl set-timezone <timezone name>
+
+# To verify the change again
+timedatectl
+```
+
+<br>
+
+While automatic synchronization is preferred, you can manually set the system date and time using `timedatectl`:
+
+```bash
+# Set date and time (format: YYYY-MM-DD HH:MM:SS)
+sudo timedatectl set-time "2025-08-14 19:30:00"
+```
+
+To change only the date:
+
+```bash
+sudo timedatectl set-time "2025-08-14"
+```
+
+To change only the time:
+
+```bash
+sudo timedatectl set-time "19:30:00"
+```
+
+<br>
+
+<div>
+  <img src=>
+</div>
+
 
 
