@@ -245,4 +245,9 @@ These are the steps to ensure you have a intternet connection:<br>
 
 <br>
 
+> [!NOTE]
+> Since this Arch installation is running on a VM inside my CSL, no additional network setup was required. The Lab environment is already configured to provide internet connectivity to any VM that is assigned to the correct VLAN and connected to the appropriate Linux bridge.
+
+<br>
+
 

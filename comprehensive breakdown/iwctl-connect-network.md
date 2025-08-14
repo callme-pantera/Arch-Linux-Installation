@@ -36,7 +36,7 @@
 
 <br>
 
-### 2.1.1 Connect to Wi-Fi
+### 2.1 Connect to Wi-Fi
 1. List devices:
 
    ```
@@ -70,7 +70,7 @@
 
 <br>
 
-### 2.1.2 WPS/WSC Connection
+### 2.2 WPS/WSC Connection
 * Check if supported: `wsc list`
 * Push-button connect:
 
@@ -81,14 +81,14 @@
 
 <br>
 
-### 2.1.3 Disconnect
+### 2.3 Disconnect
 ```
 station <device> disconnect
 ```
 
 <br>
 
-### 2.1.4 Show Info
+### 2.4 Show Info
 * Device details (MAC, etc.):
 
   ```
@@ -102,7 +102,7 @@ station <device> disconnect
 
 <br>
 
-### 2.1.5 Manage Known Networks
+### 2.5 Manage Known Networks
 * List: `known-networks list`
 * Forget: `known-networks <SSID> forget`
 
