@@ -113,8 +113,6 @@ setfont lat9w-16          # Temporary preview
 - The change lasts **only until you reboot** or switch consoles.
 - The `.psf.gz` file extension and full path are optional when using `setfont`.
 
-**Tip:** Large fonts (e.g., `ter-v32n`) are useful for HiDPI displays or if you want maximum readability.<br>
-
 Once you find a font you like, you can make it the default by editing the `/etc/vconsole.conf` file:<br>
 
 ```bash
@@ -221,7 +219,30 @@ If it returns `64` or `32`, you are in UEFI mode. If it returns *No such file or
 
 <br>
 
+### Connect to the Internet
+These are the steps to ensure you have a intternet connection:<br>
 
+1. Ensure that your network adapter is listed and enabled
+  ```bash
+  ip link
+  ```
+2. Connect to the network
+   - Ethernet: Plug in the cable
+   - Wi-Fi: Authenticate to the wireless network using [iwd](/comprehensive%20breakdown/iwctl-connect-network.md).
+3. Configure your network connection
+   - DHCP: dynamic IP address and DNS server assignment should work out of the box for Ethernet, WLAN, and WWAN network interfaces.
+   - Static IP address: follow Network configuration [Assign static IP address](/comprehensive%20breakdown/assign-static-ip.md).
+4. Verify the connection with a simple ping
+   ```bash
+   ping archlinux.org
+   ```
 
+<br>
+
+<div>
+  <img src="/assets/images/internet-success-boot.png" style="width: 100%";>
+</div>
+
+<br>
 
 
