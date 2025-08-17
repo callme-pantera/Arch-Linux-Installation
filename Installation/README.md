@@ -270,6 +270,10 @@ Look for `System clock synchronized: yes` to confirm that synchronization is act
 timedatectl set-ntp true
 ```
 
+<div>
+  <img src="/assets/images/timedatectl.png" style="width: 100%";>
+</div>
+
 <br>
 
 #### Manually Changing the Time and Timezone
@@ -295,6 +299,10 @@ sudo timedatectl set-timezone <timezone name>
 timedatectl
 ```
 
+<div>
+  <img src="/assets/images/timedatectl-timezone.png" style="width: 100%";>
+</div>
+
 <br>
 
 While automatic synchronization is preferred, you can manually set the system date and time using `timedatectl`:
@@ -318,9 +326,7 @@ sudo timedatectl set-time "19:30:00"
 
 <br>
 
-<div>
-  <img src=>
-</div>
+
 
 
 
