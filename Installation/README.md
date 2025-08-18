@@ -326,6 +326,78 @@ sudo timedatectl set-time "19:30:00"
 
 <br>
 
+### Partition the Disk
+When detected by the live system, disks are assigned to [block devices](https://wiki.archlinux.org/title/Device_file#Block_devices) such as `/dev/sda`, `/dev/nvme0n1`, or `/dev/mmcblk0`. To identify available devices, use:
+
+```bash
+lsblk
+
+# or
+
+fdisk -l
+```
+
+<div>
+  <img src="/assets/images/partitioning.png" style="width: 100%";>
+</div>
+
+<br>
+
+*Ignore devices ending in `rom`, `loop`, or `airootfs`. For eMMC (`mmcblk*`), partitions like `boot0`, `boot1`, and `rpmb` can also be ignored.*
+
+<br>
+
+> [!NOTE]
+> If the disk does not appear, ensure that the disk controller is NOT in **RAID mode** in your BIOS/UEFI settings.
+
+<br>
+
+#### Required partitions
+At minimum, you will need:
+
+* One partition for the **root directory (`/`)**.
+* For **UEFI systems**: an **EFI System Partition (ESP)**.
+* **Swap space** can be set up as a swap file, a dedicated partition, or with zram after installation.
+
+<br>
+
+> [!TIP]
+> Plan your partition scheme carefully to avoid risky conversions or resizing in the future.
+> If an EFI partition already exists, reuse it — do not create a second one.
+
+<br>
+
+#### Partitioning tools
+Use a tool such as `fdisk` to create or modify partition tables:
+
+```bash
+fdisk /dev/sdX
+```
+
+Other options include `cfdisk`, `gdisk`, or `parted`.
+
+<br>
+
+#### Example layouts
+
+##### UEFI with GPT
+
+| Mount Point | Partition             | Type                 | Suggested Size          |
+| ----------- | --------------------- | -------------------- | ----------------------- |
+| `/boot`¹    | `/dev/efi_partition`  | EFI System Partition | 1 GiB                   |
+| `[SWAP]`    | `/dev/swap_partition` | Linux swap           | ≥ 4 GiB                 |
+| `/`         | `/dev/root_partition` | Linux root (x86-64)  | Remainder (≥ 23–32 GiB) |
+
+¹ *Can also be mounted at `/efi`, depending on bootloader support.*<br>
+
+#### BIOS with MBR
+
+| Mount Point | Partition             | Type       | Suggested Size          |
+| ----------- | --------------------- | ---------- | ----------------------- |
+| `[SWAP]`    | `/dev/swap_partition` | Linux swap | ≥ 4 GiB                 |
+| `/`         | `/dev/root_partition` | Linux root | Remainder (≥ 23–32 GiB) |
+
+
 
 
 
