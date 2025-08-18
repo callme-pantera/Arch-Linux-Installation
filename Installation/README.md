@@ -491,3 +491,57 @@ For a detailed breakdown of these steps, including explanations of *why* they ar
 
 <br>
 
+## Installation
+
+### Edit the Mirrorlist
+Arch downloads its packages from *mirror servers*. These are listed in `/etc/pacman.d/mirrorlist`.<br>
+
+By default, the **Reflector** utility generated this file when you booted into the live ISO. It picked 20 recently synchronized HTTPS mirrors, sorted by speed. To check or edit:
+
+```bash
+nano /etc/pacman.d/mirrorlist
+```
+
+Recommendation:
+
+* **Keep fast and geographically close mirrors at the top**.
+* You can reorder them manually inside `nano`.
+
+<br>
+
+### Install the Base System
+Run the following to install the **base system**, kernel, and firmware:
+
+```bash
+pacstrap -K /mnt base linux linux-firmware nano man-db man-pages texinfo
+
+# Additionally in my case
+pacstrap -K /mnt git sudo htop openssh
+```
+
+This gives you:
+
+* **base** --> core system (package manager, libraries, essential tools)
+* **linux** --> kernel
+* **linux-firmware** --> firmware for devices
+* **nano** --> simple text editor
+* **man-db / man-pages / texinfo** --> local documentation
+
+If you are on **bare metal**, add CPU microcode:
+
+* Intel:
+
+  ```bash
+  pacstrap -K /mnt base linux linux-firmware intel-ucode nano man-db man-pages texinfo
+  ```
+* AMD:
+
+  ```bash
+  pacstrap -K /mnt base linux linux-firmware amd-ucode nano man-db man-pages texinfo
+  ```
+
+> [!IMPORTANT]
+> Microcode is critical for hardware-level bug and security fixes.
+
+<br>
+
