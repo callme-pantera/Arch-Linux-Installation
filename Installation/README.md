@@ -823,7 +823,190 @@ fuser -vm /mnt
 lsof | grep /mnt
 ```
 
-Finally, restart the machine by typing `reboot`: any partitions still mounted will be automatically unmounted by `systemd`. Remember to remove the installation medium and then login into the new system with the root account. 
+Finally, restart the machine by typing `reboot`: any partitions still mounted will be automatically unmounted by `systemd`. Remember to remove the installation medium and then login into the new system with the root account.<br>
+
+If everything has been configured and installed correctly, you should be able to log in to your `root` account and access the terminal.
 
 <br>
 
+## Post-Installation
+
+### Create a New User
+Working as root is unsafe. Create a normal user and give it admin rights.
+
+```bash
+useradd -m -G wheel -s /bin/bash [name]   # replace [name] with your username
+passwd [name]
+```
+
+Install and configure `sudo`:
+
+```bash
+pacman -S sudo
+EDITOR=nano visudo
+```
+
+Uncomment this line so that members of the `wheel` group can use `sudo`:
+
+```
+%wheel ALL=(ALL:ALL) ALL
+```
+
+From now on, you should use this new user for everything.
+
+<br>
+
+### Networking
+Since this system will be used as a **desktop**, I installed **NetworkManager** (easy handling of Ethernet, Wi-Fi, VPNs):
+
+```bash
+pacman -S networkmanager
+systemctl enable NetworkManager --now
+```
+
+<br>
+
+### Essential Tools
+Install basic utilities you’ll always need:
+
+```bash
+pacman -S base-devel git htop wget curl unzip zip
+```
+
+* `base-devel` --> compilers and tools (needed for the AUR).
+* `git` --> for cloning AUR packages.
+* `htop` --> process viewer.
+* `wget/curl` --> download tools.
+* `zip/unzip` --> archive utilities.
+
+<br>
+
+### Microcode (CPU Fixes) - Optional for VM
+For stability and performance, install microcode updates:
+
+```bash
+# Intel CPU
+pacman -S intel-ucode
+
+# AMD CPU
+pacman -S amd-ucode
+```
+
+<br>
+
+### GPU Drivers
+Hyprland requires **working graphics drivers**.
+
+* **Intel**:
+
+  ```bash
+  pacman -S mesa
+  ```
+* **AMD**:
+
+  ```bash
+  pacman -S mesa xf86-video-amdgpu
+  ```
+* **NVIDIA (new cards)**:
+
+  ```bash
+  pacman -S nvidia nvidia-utils
+  ```
+
+---
+
+## 6. Wayland & Hyprland Requirements
+
+Hyprland runs on **Wayland** (not Xorg). Install the necessary packages:
+
+```bash
+pacman -S wayland xorg-xwayland xdg-desktop-portal-hyprland wl-clipboard \
+        grim slurp swappy \
+        polkit polkit-gnome \
+        seatd
+```
+
+Enable seat management:
+
+```bash
+systemctl enable seatd
+```
+
+---
+
+## 7. Hyprland & Utilities
+
+Install Hyprland and some required tools:
+
+```bash
+pacman -S hyprland hyprpaper hyprlock hypridle \
+        alacritty \
+        thunar \
+        pavucontrol pipewire pipewire-pulse wireplumber \
+        firefox
+```
+
+* `hyprland` --> the compositor itself.
+* `hyprpaper` --> wallpaper utility.
+* `hyprlock` --> lockscreen.
+* `hypridle` --> idle management.
+* `alacritty` --> terminal emulator.
+* `thunar` --> file manager.
+* `pipewire` + `pavucontrol` --> modern audio stack.
+* `firefox` --> browser.
+
+---
+
+## 8. Display Manager (Login Screen)
+
+To boot into Hyprland graphically, install a Display Manager. Recommended: **GDM** or **SDDM**.
+
+### Example with GDM:
+
+```bash
+pacman -S gdm
+systemctl enable gdm
+```
+
+👉 On reboot, you’ll get a login screen. Select **Hyprland** as your session.
+
+---
+
+## 9. Fonts
+
+For proper display and later ricing:
+
+```bash
+pacman -S ttf-dejavu ttf-liberation noto-fonts
+```
+
+For terminal icons and rice setups:
+
+```bash
+pacman -S ttf-nerd-fonts-symbols
+```
+
+---
+
+## 10. Create User Configs
+
+Once logged in as your new user, create Hyprland config:
+
+```bash
+mkdir -p ~/.config/hypr
+cp /usr/share/hyprland/hyprland.conf ~/.config/hypr/
+```
+
+This file (`~/.config/hypr/hyprland.conf`) is where all your **ricing** happens.
+
+---
+
+## 11. Reboot
+
+```bash
+reboot
+```
+
+After reboot --> login with your user --> select **Hyprland** --> enjoy your desktop. 🎉
+
+---
