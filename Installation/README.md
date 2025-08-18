@@ -545,3 +545,285 @@ If you are on **bare metal**, add CPU microcode:
 
 <br>
 
+## Configure the System
+Once the base system is installed, we need to prepare it so that it can actually boot and behave like a normal Linux installation. Two critical steps here are:
+
+1. **Generating the filesystem table (`fstab`)**
+2. **Changing root (`arch-chroot`)** into the new system
+
+<br>
+
+### Generate `fstab`
+When Linux boots, it needs to know *what partitions exist* and *where they should be mounted*. This is what `fstab` (“file system table”) provides.
+
+* **What it does**:
+  * Maps partitions --> to their mount points (`/`, `/boot`, `/home`, etc.)
+  * Defines mount options (e.g. read/write, filesystem type, whether swap should activate, etc.)
+  * Ensures consistency: every reboot mounts the correct partitions in the correct places.
+
+* **Why use `-U` or `-L`?**
+  * `-U`: Refers to partitions by UUID (unique identifier). This is the most reliable, because even if the disk order changes (e.g., `/dev/sda` becomes `/dev/sdb`), Linux will still mount the correct partition.
+  * `-L`: Refers to partitions by label. Works too, but less robust.
+  * Plain `/dev/sdaX` references can break if drives are added/removed, so we avoid them.
+
+This scans all mounted partitions under `/mnt` (your root, EFI, swap, etc.) and appends their definitions into `/mnt/etc/fstab`:
+
+```bash
+genfstab -U /mnt >> /mnt/etc/fstab
+```
+
+**Check the file manually**:
+
+```bash
+cat /mnt/etc/fstab
+```
+
+If anything looks wrong (wrong filesystem, missing mount point, etc.), **edit it** with `nano` before proceeding:
+
+```bash
+nano /mnt/etc/fstab
+```
+
+> [!WARNING]
+> A broken `fstab` will cause boot failures (e.g., if `/` or `/boot` aren’t mounted properly). That’s why checking it now is critical.
+
+<br>
+
+### Enter the New System with `arch-chroot`
+Up to this point, we’ve been working inside the **Arch ISO live environment**.<br>
+But now, we want to configure the system **as if we were booted into it** — setting hostname, locale, installing bootloader, etc. That’s what **`chroot`** (change root) does.
+
+```bash
+arch-chroot /mnt
+```
+
+* **What happens**:
+  * You’re now “teleported” into your installed system at `/mnt` — but `/mnt` becomes `/`.
+  * From this moment, everything you do (install packages, edit configs, set timezone, users, etc.) applies directly to your *new Arch system*.
+  * Think of it as “booting into your system without rebooting.
+
+* **Why this step matters**:
+  * You cannot configure the system (like setting passwords, bootloader, locale) from the ISO — those configs must live in the installed root.
+  * Without `chroot`, your new system is incomplete and won’t boot correctly.
+
+<br>
+
+### Time
+Your system needs to know in which time zone it operates. This ensures:
+
+* The clock displays correctly for your location.
+* Daylight Saving Time (DST) is applied automatically if relevant.
+
+```bash
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+```
+
+#### Hardware clock (RTC)
+Computers have two clocks:
+
+* **System clock** (software clock) --> maintained by the Linux kernel, resets at boot.
+* **Hardware clock (RTC, Real-Time Clock)** --> battery-backed clock on the motherboard, independent of OS.
+
+We synchronize the **system clock** to the hardware clock so they match:
+
+```bash
+hwclock --systohc
+```
+
+This creates `/etc/adjtime` and assumes the hardware clock is in **UTC** (best practice). UTC avoids confusion with DST and multi-boot systems.<br>
+
+#### NTP - Network Time Protocol
+To prevent clock drift (when hardware slowly loses/gains seconds), enable automatic synchronization with internet time servers using **systemd-timesyncd**:
+
+```bash
+timedatectl set-ntp true
+```
+
+Check status:
+
+```bash
+timedatectl status
+```
+
+<div>
+   <img src="/assets/images/time1.png" style="width: 100%";>
+</div>
+
+<br>
+
+### Localization
+Localization defines **how your system handles language, character sets, and formatting** (dates, currency, decimal separators, etc.). To achieve this, edit `/etc/locale.gen`. Uncomment the locales you want. At least one **UTF-8** locale is strongly recommended. For example:
+
+```text
+en_US.UTF-8 UTF-8
+de_CH.UTF-8 UTF-8
+```
+
+After that generate the locales, by running:
+
+```bash
+locale-gen
+```
+
+#### Configure system-wide language
+Create `/etc/locale.conf` and set your main locale:
+
+```text
+LANG=en_US.UTF-8
+```
+
+You can later switch language at any time by editing this file.
+
+<br>
+
+### Console Keyboard Layout (Optional)
+If you used a non-US keyboard layout during installation (e.g. German, Russian, Croatian, French), you should make it persistent. This ensures that your console (TTYs) uses the correct keyboard layout on every boot:<br>
+
+Create `/etc/vconsole.conf`:
+
+```text
+KEYMAP=de-latin1
+```
+
+<br>
+
+### Network Configuration
+The **hostname** is the system’s name on the network. It makes your machine identifiable to you and to other machines/services. Create `/etc/hostname` and add a simple, unique name:
+
+```bash
+echo "test-archvm" > /etc/hostname
+```
+
+* Must be **1–63 characters** long.
+* Only lowercase letters (`a–z`), digits (`0–9`), and hyphens (`-`) are allowed.
+* Must not start or end with `-`.<br>
+
+#### Hosts file
+Next, link the hostname to `127.0.0.1` (loopback address) in `/etc/hosts` to avoid errors from programs that expect hostname resolution:
+
+```text
+127.0.0.1   localhost
+::1         localhost
+127.0.1.1   arch-vm
+```
+
+*`127.0.1.1` is conventionally used for your machine’s hostname.*
+
+<br>
+
+### Network Connectivity
+Arch does not come with preconfigured networking, so you need to set it up manually or install a tool.<br>
+
+There are two common approaches for network management on Arch Linux. Which one you choose depends on whether your system is a **server/VM** or a **desktop environment**.
+
+#### a) Systemd-networkd + systemd-resolved (minimal, lightweight)
+
+* Built into **systemd**.
+* Very **lightweight**, with no extra dependencies.
+* Ideal for **servers, headless setups, and lab VMs** where only basic Ethernet/DHCP is required.
+* Pairs well with environments like my **CSL VLANs**, where networking is already controlled by OPNsense.
+
+```bash
+systemctl enable systemd-networkd
+systemctl enable systemd-resolved
+```
+
+<br>
+
+#### b) NetworkManager (desktop-friendly, recommended for daily use)
+
+* Provides automatic handling of **Ethernet, Wi-Fi, VPNs, and mobile broadband**.
+* Integrates seamlessly with **desktop environments** (GNOME, KDE, XFCE, etc.).
+* Comes with both a **command-line interface** (`nmcli`) and **GUI tools**.
+* Slightly more overhead than `systemd-networkd`, but far more convenient for a **full desktop setup**.
+
+```bash
+pacman -S networkmanager
+systemctl enable NetworkManager
+```
+<br>
+
+##### My Setup
+Since this Arch Linux VM is meant as a **testbed for a future bare-metal daily driver**, I will use **NetworkManager**. This ensures the VM behaves like a real desktop OS (with Wi-Fi, VPN, and GUI support), rather than a stripped-down server.
+
+<br>
+
+### Initramfs
+During installation, **`mkinitcpio`** already created an initial ramdisk (`initramfs`) when the kernel package was installed with `pacstrap`.
+In a standard VM setup (like this project), you normally don’t need to touch it again.<br>
+
+However, if you later configure **LVM, full-disk encryption, or RAID**, you must update the initramfs configuration (`/etc/mkinitcpio.conf`) and regenerate it with:
+
+```bash
+mkinitcpio -P
+```
+
+<br>
+
+### Root Password
+Set a secure password for the **root** account so you can log in and perform administrative tasks:
+
+```bash
+passwd
+```
+
+> [!TIP]
+> Use a **strong password** (even for a VM) — this simulates the real-world bare-metal install and trains good security habits.
+
+<br>
+
+### Boot Loader
+The system now needs a **boot loader** to load the kernel and initramfs. Since I'm using **UEFI + GPT** in this VM, the recommended boot loader is **GRUB** with EFI support.
+
+```bash
+pacman -S grub efibootmgr
+```
+
+Then install GRUB to the EFI system partition and generate its config. After this step, the system will be bootable:
+
+```bash
+# Install GRUB to EFI
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
+
+# Generate config
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+<br>
+
+### Testing and Reboot
+Before exiting chroot and rebooting, make sure everything is correct:
+
+```bash
+lsblk -f
+swapon --show
+ls -lh /boot/initramfs-linux*.img
+ls -lh /boot/vmlinuz-linux
+ls -R /boot/EFI
+cat /boot/grub/grub.cfg | less
+efibootmgr -v
+cat /etc/fstab
+cat /etc/hostname
+cat /etc/locale.conf
+timedatectl
+```
+
+<div>
+   <img src="/assets/images/testing-1.png" style="width: 100%";>
+   <img src="/assets/images/testing-2.png" style="width: 100%";>
+</div>
+
+<br>
+
+Exit the chroot environment by typing `exit` or pressing `Ctrl+d`. Optionally manually unmount all the partitions with `umount -R /mnt`: this allows noticing any "busy" partitions, and finding the cause with `fuser(1)`. 
+
+```bash
+# Example
+fuser -vm /mnt
+lsof | grep /mnt
+```
+
+Finally, restart the machine by typing `reboot`: any partitions still mounted will be automatically unmounted by `systemd`. Remember to remove the installation medium and then login into the new system with the root account. 
+
+<br>
+
