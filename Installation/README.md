@@ -326,7 +326,7 @@ sudo timedatectl set-time "19:30:00"
 
 <br>
 
-### Partition the Disk
+### Partition the Disks
 When detected by the live system, disks are assigned to [block devices](https://wiki.archlinux.org/title/Device_file#Block_devices) such as `/dev/sda`, `/dev/nvme0n1`, or `/dev/mmcblk0`. To identify available devices, use:
 
 ```bash
@@ -378,9 +378,9 @@ Other options include `cfdisk`, `gdisk`, or `parted`.
 
 <br>
 
-#### Example layouts
+**Example layouts**
 
-##### UEFI with GPT
+***UEFI with GPT***
 
 | Mount Point | Partition             | Type                 | Suggested Size          |
 | ----------- | --------------------- | -------------------- | ----------------------- |
@@ -390,15 +390,104 @@ Other options include `cfdisk`, `gdisk`, or `parted`.
 
 ¹ *Can also be mounted at `/efi`, depending on bootloader support.*<br>
 
-#### BIOS with MBR
+***BIOS with MBR***
 
 | Mount Point | Partition             | Type       | Suggested Size          |
 | ----------- | --------------------- | ---------- | ----------------------- |
 | `[SWAP]`    | `/dev/swap_partition` | Linux swap | ≥ 4 GiB                 |
 | `/`         | `/dev/root_partition` | Linux root | Remainder (≥ 23–32 GiB) |
 
+<br>
 
+In my case, I have a **clean 100 GiB disk (`/dev/sda`)** with nothing on it, just as intended in Proxmox. I need to make a **fresh UEFI + GPT layout**, but first I need to partition the disk with `fdisk`:
 
+```bash
+fdisk /dev/sda
+```
 
+Inside `fdisk`, do this step by step:
 
+1. **Create a new GPT partition table**
+   * Type `g` --> creates a new empty GPT.
+
+2. **Create EFI System Partition (ESP)**
+   * Type `n` --> new partition.
+   * Partition number: `1`
+   * First sector: *press Enter* (default).
+   * Last sector: `+1G` (1 GiB size).
+   * Type `t` --> change type --> select `1` --> enter `EFI System`.
+
+3. **Create swap partition**
+   * Type `n` --> new partition.
+   * Partition number: `2`
+   * First sector: *press Enter*
+   * Last sector: `+4G` (at least 4 GiB; you can do 8 GiB if you want).
+   * Type `t` --> change type --> select `2` --> enter `Linux swap`.
+
+4. **Create root partition `/`**
+   * Type `n` --> new partition.
+   * Partition number: `3`
+   * First sector: *press Enter*
+   * Last sector: *press Enter* (take all remaining space).
+   * Leave type as default (`Linux filesystem`).
+
+5. **Write changes**
+   * Type `w` --> save and exit.
+
+Now you’ll have:
+
+* `/dev/sda1` = EFI (1 GiB)
+* `/dev/sda2` = Swap (4 GiB)
+* `/dev/sda3` = Root (≈95 GiB)
+
+> [!TIP]  
+> In my case, a single `root` partition is sufficient since this setup runs inside a VM on my CSL-Server.  
+> For a bare-metal installation, however, it is generally recommended to create additional partitions such as `/home`, `/var`, `/tmp`, or `/srv` to improve data separation, security, and long-term system stability.
+
+<div>
+   <img src="/assets/images/partioning-1.png" style="width: 100%";>
+</div>
+
+<br>
+
+### Format the Partitions
+Now format them as follows:
+
+```bash
+# EFI partition
+mkfs.fat -F32 /dev/sda1
+
+# Swap partition
+mkswap /dev/sda2
+swapon /dev/sda2   # enable swap immediately
+
+# Root partition
+mkfs.ext4 /dev/sda3
+```
+
+<div>
+   <img src="/assets/images/formatting-1.png" style="width: 100%";>
+</div>
+
+<br>
+
+### Mount the Partitions
+After formatting, mount them for the Arch installation:
+
+```bash
+# Mount root
+mount /dev/sda3 /mnt
+
+# Create boot dir for EFI
+mkdir -p /mnt/boot
+
+# Mount EFI
+mount /dev/sda1 /mnt/boot
+```
+
+Swap is already active with `swapon`.<br>
+
+For a detailed breakdown of these steps, including explanations of *why* they are necessary and what each one does, refer to the corresponding document [here](../comprehensive%20breakdown/partion-format-mount.md).
+
+<br>
 
